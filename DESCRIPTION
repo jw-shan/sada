@@ -1,0 +1,22 @@
+Package: sada
+Title: Safe and Adaptive Aggregation of Multiple Black-Box Predictions in Semi-Supervised Learning
+Version: 0.1.0
+Authors@R: 
+    person("Jiawei", "Shan", , "jiawei.shan@wisc.edu", role = c("aut", "cre"))
+Description: Implements SADA (safe and adaptive aggregation) methods for
+    semi-supervised learning with multiple black-box outcome predictions.
+    The package provides estimators for the marginal outcome mean and for
+    linear regression coefficients that combine labeled outcomes, unlabeled
+    covariates and several prediction models in a provably safe and adaptive
+    way. Functions return point estimates, standard errors, confidence
+    intervals and optimal aggregation weights, and are designed to be easy
+    to use in both simulation studies and applied data analyses. Methods are
+    based on the paper "Safe and Adaptive Aggregation of Multiple Black-Box
+    Predictions in Semi-Supervised Learning" (<arXiv:2509.21707>). 
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    BB,
+    numDeriv
