@@ -1,5 +1,5 @@
-.Rproj.user
-.RData
-.Rhistory
-.rmd
-.bkp
+*.Rproj.user
+*.RData
+*.Rhistory
+*.rmd
+*.bkp
