@@ -1,18 +1,41 @@
+---
+title: "sada"
+output:
+  md_document:
+    variant: gfm
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
 # sada
 
-R package for implementing SADA: Safe and Adaptive Aggregation of
-Multiple Black-Box Predictions in Semi-Supervised Learning.
+R package for implementing SADA: Safe and Adaptive Aggregation of Multiple
+Black-Box Predictions in Semi-Supervised Learning.
+
 
 ## Installation
 
-``` r
+```{r install, eval=FALSE}
 install.packages("devtools")
 devtools::install_github("jw-shan/sada")
 ```
 
+```{r setup_sada, include=FALSE}
+library(sada)
+```
+
+
+
 ## Example: Implement SADA-OLS with two predictions
 
-``` r
+```{r example}
 ## Sample sizes
 n <- 100    # labeled
 m <- 500   # unlabeled
@@ -56,58 +79,17 @@ fit_sada <- sada_ols(
 
 ## Coefficient estimates from SADA (including intercept)
 fit_sada$est
-```
 
-    ## (Intercept)          X1          X2 
-    ##   0.9534264   1.7378212  -1.0285217
-
-``` r
 ## Standard errors and confidence intervals from SADA
 fit_sada$sd
-```
-
-    ## (Intercept)          X1          X2 
-    ##  0.09221809  0.09109275  0.10739475
-
-``` r
 fit_sada$ci
-```
 
-    ##                  lower      upper
-    ## (Intercept)  0.7726823  1.1341706
-    ## X1           1.5592827  1.9163597
-    ## X2          -1.2390116 -0.8180319
-
-``` r
 ## A regression style summary, similar to summary(lm)
 summary(fit_sada)
-```
 
-    ## SADA OLS Regression Results
-    ## 
-    ## Call:
-    ## sada_ols(Y = Y, Yhat_labeled = Yhat_labeled, Yhat_unlabeled = Yhat_unlabeled, 
-    ##     X_labeled = X_labeled, X_unlabeled = X_unlabeled)
-    ## 
-    ## Coefficients:
-    ##              Estimate Std.Error z value  Pr(>|z|)    
-    ## (Intercept)  0.953426  0.092218  10.339 < 2.2e-16 ***
-    ## X1           1.737821  0.091093  19.078 < 2.2e-16 ***
-    ## X2          -1.028522  0.107395  -9.577 < 2.2e-16 ***
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
 ## Extract the covariance matrix via the vcov method
 vcov(fit_sada)
-```
 
-    ##              (Intercept)            X1           X2
-    ## (Intercept) 0.0085041759  0.0006284088  0.003611680
-    ## X1          0.0006284088  0.0082978883 -0.001615217
-    ## X2          0.0036116796 -0.0016152166  0.011533632
-
-``` r
 ## Compare with ordinary OLS using labeled data only
 ## We fit lm on the same covariates, without using any unlabeled data
 df_labeled <- data.frame(
@@ -119,24 +101,9 @@ fit_lm <- lm(Y ~ X1 + X2, data = df_labeled)
 
 ## Coefficients from naive OLS based on labeled data
 summary(fit_lm)$coefficients
-```
 
-    ##               Estimate Std. Error   t value     Pr(>|t|)
-    ## (Intercept)  0.9757137 0.09636466  10.12522 7.195106e-17
-    ## X1           1.7374658 0.09499727  18.28964 3.332663e-33
-    ## X2          -1.0099056 0.09168660 -11.01476 8.780017e-19
-
-``` r
 ## Prediction for new covariate values
 X_new <- data.frame(X1=rnorm(5), X2=rnorm(5))
 predict(fit_lm, newdata = X_new)
-```
-
-    ##         1         2         3         4         5 
-    ##  4.585920  3.619801  3.012041 -1.605989  3.657685
-
-``` r
 predict(fit_sada, newdata = X_new)
 ```
-
-    ## [1]  4.549057  3.575402  2.995172 -1.624774  3.638181
