@@ -74,13 +74,13 @@
 #' }
 #'
 #' @examples
-#' ## Example: Implements SADA OLS with two predictions
-#'
 #' set.seed(123)
 #'
+#' ## Example: compare SADA OLS with ordinary OLS using labeled data only
+#'
 #' ## Sample sizes
-#' n <- 100    # labeled
-#' m <- 500   # unlabeled
+#' n <- 80    # labeled
+#' m <- 200   # unlabeled
 #'
 #' ## True coefficients: intercept and slopes
 #' beta_true <- c(1, 2, -1)
@@ -111,6 +111,8 @@
 #' Yhat_unlabeled <- cbind(Yhat1_full[(n + 1):N], Yhat2_full[(n + 1):N])
 #'
 #' ## Fit SADA OLS estimator
+#' ## X_labeled and X_unlabeled do not contain an intercept
+#' ## A column of ones is added inside sada_ols
 #' fit_sada <- sada_ols(
 #'   Y = Y,
 #'   Yhat_labeled = Yhat_labeled,
@@ -142,14 +144,14 @@
 #' fit_lm <- lm(Y ~ X1 + X2, data = df_labeled)
 #'
 #' ## Coefficients from naive OLS based on labeled data
-#' summary(fit_lm)$coefficients
+#' coef(fit_lm)
 #'
 #' ## Prediction for new covariate values
-#' X_new <- data.frame(X1=rnorm(5), X2=rnorm(5))
-#' predict(fit_lm, newdata = X_new)
-#' predict(fit_sada, newdata = X_new)
+#' ## newdata must be a matrix or data frame without an intercept column
+#' X_new <- cbind(rnorm(5), rnorm(5))
 #'
-#'
+#' ## SADA predictions
+#' pred_sada <- predict(fit_sada, newdata = X_new)
 #'
 #' @importFrom stats lm qnorm cov coef residuals
 #' @export
