@@ -13,6 +13,8 @@ devtools::install_github("jw-shan/sada")
 ## Example: Implement SADA-OLS with two predictions
 
 ``` r
+library(sada)
+
 ## Sample sizes
 n <- 100    # labeled
 m <- 500   # unlabeled
@@ -59,7 +61,7 @@ fit_sada$est
 ```
 
     ## (Intercept)          X1          X2 
-    ##   0.9534264   1.7378212  -1.0285217
+    ##   0.9100656   1.8614387  -0.9123843
 
 ``` r
 ## Standard errors and confidence intervals from SADA
@@ -67,16 +69,16 @@ fit_sada$sd
 ```
 
     ## (Intercept)          X1          X2 
-    ##  0.09221809  0.09109275  0.10739475
+    ##  0.09581569  0.09346693  0.09241448
 
 ``` r
 fit_sada$ci
 ```
 
     ##                  lower      upper
-    ## (Intercept)  0.7726823  1.1341706
-    ## X1           1.5592827  1.9163597
-    ## X2          -1.2390116 -0.8180319
+    ## (Intercept)  0.7222703  1.0978609
+    ## X1           1.6782469  2.0446305
+    ## X2          -1.0935133 -0.7312552
 
 ``` r
 ## A regression style summary, similar to summary(lm)
@@ -91,9 +93,9 @@ summary(fit_sada)
     ## 
     ## Coefficients:
     ##              Estimate Std.Error z value  Pr(>|z|)    
-    ## (Intercept)  0.953426  0.092218  10.339 < 2.2e-16 ***
-    ## X1           1.737821  0.091093  19.078 < 2.2e-16 ***
-    ## X2          -1.028522  0.107395  -9.577 < 2.2e-16 ***
+    ## (Intercept)  0.910066  0.095816  9.4981 < 2.2e-16 ***
+    ## X1           1.861439  0.093467 19.9155 < 2.2e-16 ***
+    ## X2          -0.912384  0.092414 -9.8727 < 2.2e-16 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -102,10 +104,10 @@ summary(fit_sada)
 vcov(fit_sada)
 ```
 
-    ##              (Intercept)            X1           X2
-    ## (Intercept) 0.0085041759  0.0006284088  0.003611680
-    ## X1          0.0006284088  0.0082978883 -0.001615217
-    ## X2          0.0036116796 -0.0016152166  0.011533632
+    ##               (Intercept)            X1            X2
+    ## (Intercept)  0.0091806468 -0.0005133307  0.0020493098
+    ## X1          -0.0005133307  0.0087360677 -0.0004492794
+    ## X2           0.0020493098 -0.0004492794  0.0085404365
 
 ``` r
 ## Compare with ordinary OLS using labeled data only
@@ -121,10 +123,10 @@ fit_lm <- lm(Y ~ X1 + X2, data = df_labeled)
 summary(fit_lm)$coefficients
 ```
 
-    ##               Estimate Std. Error   t value     Pr(>|t|)
-    ## (Intercept)  0.9757137 0.09636466  10.12522 7.195106e-17
-    ## X1           1.7374658 0.09499727  18.28964 3.332663e-33
-    ## X2          -1.0099056 0.09168660 -11.01476 8.780017e-19
+    ##               Estimate Std. Error    t value     Pr(>|t|)
+    ## (Intercept)  0.9234582  0.1000242   9.232344 6.098617e-15
+    ## X1           1.8661495  0.1037805  17.981689 1.193536e-32
+    ## X2          -0.9780210  0.0930549 -10.510150 1.064895e-17
 
 ``` r
 ## Prediction for new covariate values
@@ -133,10 +135,10 @@ predict(fit_lm, newdata = X_new)
 ```
 
     ##         1         2         3         4         5 
-    ##  4.585920  3.619801  3.012041 -1.605989  3.657685
+    ## 3.8167306 2.6142026 0.6305609 0.4226252 3.4082587
 
 ``` r
 predict(fit_sada, newdata = X_new)
 ```
 
-    ## [1]  4.549057  3.575402  2.995172 -1.624774  3.638181
+    ## [1] 3.743283 2.722711 0.553095 0.403401 3.365777
