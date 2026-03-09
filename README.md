@@ -1,12 +1,11 @@
 # sada
 
-R package for implementing SADA: Safe and Adaptive Aggregation of
-Multiple Black-Box Predictions in Semi-Supervised Learning.
+R package for implementing [SADA: Safe and Adaptive Aggregation of Multiple Black-Box Predictions in Semi-Supervised Learning](https://arxiv.org/abs/2509.21707).
 
 ## Installation
 
 ``` r
-install.packages("devtools")
+# install.packages("devtools")
 devtools::install_github("jw-shan/sada")
 ```
 
