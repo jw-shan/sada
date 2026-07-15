@@ -286,9 +286,11 @@ sada_ee <- function(Y,
     stop("s_fun must return an n times p matrix consistently.")
   }
 
-  A <- crossprod(S_l) / n               # approx E[ S S^T ]
-  B <- crossprod(S_l, s_l_pre) / n      # approx E[ S s^T ]
-  w_opt_mat <- solve(A, B)              # (Kp times p)
+  ## Optimal weight: w_opt = (N-n)/N * var(S)^{-1} E[S s^T].
+  mean_S <- colMeans(S_l)
+  A <- crossprod(S_l) / n - tcrossprod(mean_S)   # centered var(S), labeled data
+  B <- crossprod(S_l, s_l_pre) / n               # approx E[ S s^T ]
+  w_opt_mat <- ((N - n) / N) * solve(A, B)       # (Kp times p)
 
   ## 3. SADA estimating equation using fixed w_opt_mat
   ee_sada <- function(beta) {

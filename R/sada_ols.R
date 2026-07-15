@@ -203,13 +203,17 @@ sada_ols <- function(Y,
   p <- NCOL(X_labeled)
   K <- NCOL(Yhat_labeled)
 
-  ## Give coefficient names
+  ## Give coefficient names. The first column is always the intercept added
+  ## above; any remaining columns without a name get default names X1, X2, ...
+  ## (Using colnames() directly would leave the intercept unnamed whenever the
+  ## supplied covariates already carry column names.)
   x_names <- colnames(X_labeled)
-  if (is.null(x_names)) {
-    x_names <- c("(Intercept)", paste0("X", seq_len(p - 1)))
-    colnames(X_labeled) <- x_names
-    colnames(X_unlabeled) <- x_names
-  }
+  if (is.null(x_names)) x_names <- rep("", p)
+  x_names[1] <- "(Intercept)"
+  missing_cov <- which(is.na(x_names) | x_names == "")
+  if (length(missing_cov)) x_names[missing_cov] <- paste0("X", missing_cov - 1L)
+  colnames(X_labeled) <- x_names
+  colnames(X_unlabeled) <- x_names
 
   ## Combine full X and prediction matrices
   X_full <- rbind(X_labeled, X_unlabeled)

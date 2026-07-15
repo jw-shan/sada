@@ -3,3 +3,4 @@
 *.Rhistory
 *.rmd
 *.bkp
+.DS_Store

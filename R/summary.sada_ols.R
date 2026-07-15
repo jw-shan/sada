@@ -67,7 +67,10 @@ vcov.sada_ols <- function(object, ...) {
 #' @param object An object of class \code{"sada_ols"}.
 #' @param newdata Matrix or data frame of covariates (without intercept
 #'   column). If missing, predictions for the labeled design matrix are
-#'   not available because the original X is not stored.
+#'   not available because the original X is not stored. If \code{newdata}
+#'   carries column names that include all fitted covariates, its columns
+#'   are selected and reordered by name; otherwise columns are used
+#'   positionally and their number must match the fitted covariates.
 #' @param ... Additional arguments (ignored).
 #'
 #' @return Numeric vector of predicted outcomes.
@@ -78,9 +81,33 @@ predict.sada_ols <- function(object, newdata, ...) {
     stop("Please provide 'newdata' (covariates without intercept).")
   }
 
-  X_new <- as.matrix(newdata)
-  X_new <- cbind(1, X_new)
+  beta <- object$est
+  p_cov <- length(beta) - 1L                 # covariates expected (intercept excluded)
+  coef_names <- names(beta)
+  ## The intercept is always the first coefficient (sada_ols prepends it), so
+  ## the covariate names are simply the remaining ones.
+  cov_names <- if (!is.null(coef_names)) coef_names[-1] else character(0)
 
-  drop(X_new %*% object$est)
+  ## If newdata carries column names that include all fitted covariates,
+  ## select and reorder by name so column order cannot be silently mismatched.
+  nd_names <- colnames(newdata)
+  if (length(cov_names) == p_cov && !is.null(nd_names) && all(cov_names %in% nd_names)) {
+    newdata <- newdata[, cov_names, drop = FALSE]
+  }
+
+  X_new <- as.matrix(newdata)
+  if (!is.numeric(X_new)) {
+    stop("'newdata' must contain only numeric covariate columns.")
+  }
+  if (ncol(X_new) != p_cov) {
+    stop(sprintf(
+      paste0("'newdata' has %d column(s) but the model expects %d ",
+             "covariate(s) (an intercept is added automatically)."),
+      ncol(X_new), p_cov
+    ))
+  }
+
+  X_new <- cbind(1, X_new)
+  drop(X_new %*% beta)
 }
 
